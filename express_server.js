@@ -23,14 +23,22 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
+
 app.get("/urls", (req, res) => {
   const tempVariables = {urls: urlDatabase};
   res.render("urls_index", tempVariables);
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  const longURL = req.body.longURL;
+  const shortURL = generateRandomString();
+
+  urlDatabase[shortURL] = `http://${longURL}`;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -49,7 +57,7 @@ app.get("/urls/:id", (req, res) => {
 const generateRandomString = function() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
   let finalString = "";
-  for(let i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i++) {
     const randomIndex = Math.floor(Math.random() * chars.length);
     finalString += chars.charAt(randomIndex);
   }
