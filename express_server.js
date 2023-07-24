@@ -8,6 +8,9 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+
+app.use(express.urlencoded({ extended: true }));
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -20,18 +23,18 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/set", (req, res) => {
-  const a = 1;
-  res.send(`a = ${a}`);
-});
- 
-app.get("/fetch", (req, res) => {
-  res.send(`a = ${a}`);
-});
-
 app.get("/urls", (req, res) => {
   const tempVariables = {urls: urlDatabase};
   res.render("urls_index", tempVariables);
+});
+
+app.post("/urls", (req, res) => {
+  console.log(req.body); // Log the POST request body to the console
+  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+});
+
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -42,6 +45,17 @@ app.get("/urls/:id", (req, res) => {
   };
   res.render("urls_show", templateVars);
 });
+
+const generateRandomString = function() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+  let finalString = "";
+  for(let i = 0; i < 6; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    finalString += chars.charAt(randomIndex);
+  }
+  return finalString;
+};
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
