@@ -11,14 +11,6 @@ const urlDatabase = {
 
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
@@ -41,6 +33,11 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
+
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
@@ -57,12 +54,23 @@ app.get("/urls/:id", (req, res) => {
 const generateRandomString = function() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
   let finalString = "";
-  for (let i = 0; i < 6; i++) {
-    const randomIndex = Math.floor(Math.random() * chars.length);
-    finalString += chars.charAt(randomIndex);
+  let isUnique = false;
+
+  while (!isUnique) {
+    finalString = "";
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      finalString += chars.charAt(randomIndex);
+    }
+
+    if (!urlDatabase[finalString]) {
+      isUnique = true;
+    }
   }
+
   return finalString;
 };
+
 
 
 app.listen(PORT, () => {
