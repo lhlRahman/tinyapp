@@ -4,8 +4,8 @@ const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": "https://www.lighthouselabs.ca",
+  "9sm5xK": "https://www.google.com"
 };
 
 
@@ -29,12 +29,17 @@ app.post("/urls", (req, res) => {
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
 
-  urlDatabase[shortURL] = `http://${longURL}`;
+  urlDatabase[shortURL] = longURL.includes("https://") ? longURL : `https://${longURL}`;
   res.redirect(`/urls/${shortURL}`);
 });
+app.post("/login", (req, res) => {
+  res.cookie("login",req.body.username);
+  res.redirect("/urls");
+});
+
 app.post("/urls/:id", (req, res) => {
   const newURL = req.body.longURL;
-  urlDatabase[req.params.id] = "http://" + newURL;
+  urlDatabase[req.params.id] = newURL.includes("https://") ? newURL : `https://${newURL}`;
   res.redirect(`/urls`);
 });
 
