@@ -105,7 +105,6 @@ app.get("/urls/:id", (req, res) => {
   };
 
   const userId = req.cookies.userid;
-  console.log(userId);
   if (userId && users[userId]) {
     templateVars.email = users[userId].email;
   }
