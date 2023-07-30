@@ -10,8 +10,7 @@
     />
     <%- include('partials/_header') %>
 
-
-    <title>TinyApp Register</title>
+    <title>TinyApp Login</title>
   </head>
   <body style="background-color: rgb(255, 255, 255);">
     <!DOCTYPE html>
@@ -21,18 +20,18 @@
 </head>
 <body>
     <div style="text-align: center; position: absolute; top: 25%; left: 50%; transform: translate(-50%, -50%);">
-        <h1>Register</h1>
-        <form action="register" method="post">
+        <h1>Login</h1>
+        <form action="login" method="post">
           <div>
           <label>Email: </label>
-          <input class="emailInput" type = "email" name ="registerEmail" placeholder="Email" style="margin: 1em">
+          <input class="emailInput" type = "email" name ="loginEmail" placeholder="Email" style="margin: 1em">
           </div>
           <div>
           <label>Password: </label>
-          <input class="passwordInput" type = "password" name ="registerPassword" placeholder="Password" style="margin: 1em">
+          <input class="passwordInput" type = "password" name ="loginPassword" placeholder="Password" style="margin: 1em">
         </div>
         <div>
-          <button type="submit" class="btn btn-outline-dark">Register</button>
+          <button type="submit" class="btn btn-outline-dark">Login</button>
         </div>
         </form>
     </div>

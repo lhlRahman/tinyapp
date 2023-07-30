@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
-const e = require("express");
 const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
@@ -29,11 +28,39 @@ app.use(cookieParser());
 
 app.post("/logout", (req, res) => {
   res.clearCookie("userid");
-  res.redirect("/urls");
+  res.redirect("/login");
+});
+
+app.get("/login", (req, res) => {
+  const tempVariables = {
+    email: req.cookies.userid ? users[req.cookies.userid].email : null,
+  };
+  res.render("urls_login", tempVariables);
+});
+  
+app.post("/login", (req, res) => {
+  const {loginEmail, loginPassword} = req.body;
+  const loginCheck = userLookup(loginEmail);
+
+  if (loginCheck && loginCheck.password === loginPassword) {
+    res.cookie("userid", loginCheck.id);
+    res.redirect("urls");
+  } else {
+    if (loginCheck) {
+      res.status(403).send('Incorrect Password');
+    } else {
+      res.status(403).send('Incorrect Email Or Email Not Exist');
+    }
+  }
+
 });
 
 app.get("/register", (req, res) => {
-  res.render("urls_register");
+  const tempVariables = {
+    email: req.cookies.userid ? users[req.cookies.userid].email : null,
+  };
+  
+  res.render("urls_register", tempVariables);
 });
 
 app.get("/urls.json", (req, res) => {
@@ -48,15 +75,25 @@ app.get("/u/:id", (req, res) => {
 app.get("/urls", (req, res) => {
   const tempVariables = {
     urls: urlDatabase,
-    username: req.cookies.userid ? users[req.cookies.userid].email : null,
+    email: null,
   };
+
+  const userId = req.cookies.userid;
+  if (userId && users[userId]) {
+    tempVariables.email = users[userId].email;
+  }
 
   res.render("urls_index", tempVariables);
 });
 
 
+
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const tempVariables = {
+    email: req.cookies.userid ? users[req.cookies.userid].email : null,
+    userid: req.cookies.userid
+  };
+  res.render("urls_new", tempVariables);
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -64,8 +101,14 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: shortURL,
     longURL: urlDatabase[shortURL],
-    username: req.cookies["userid"],
+    email: null
   };
+
+  const userId = req.cookies.userid;
+  console.log(userId);
+  if (userId && users[userId]) {
+    templateVars.email = users[userId].email;
+  }
 
 
   res.render("urls_show", templateVars);
