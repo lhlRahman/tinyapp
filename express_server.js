@@ -236,6 +236,14 @@ app.post("/urls/:id", (req, res) => {
   res.redirect(`/urls`);
 });
 
+app.get("/", (req, res) => {
+  if (req.session.userid) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
